@@ -1,0 +1,29 @@
+How to scale a Node.js application?
+
+    Clustering → spawn multiple processes (cluster module).
+
+    Load balancers (Nginx, PM2).
+
+    Worker threads for CPU-intensive tasks.
+
+    Use caching (Redis, Memcached).
+
+How does Node.js handle multi-threading?
+
+    Node.js itself is single-threaded, but heavy tasks (file I/O, crypto, DNS, compression) use libuv’s thread pool.
+
+    worker_threads module can be used for CPU-bound tasks.
+
+Clustering
+    Run your Express/Koa/NestJS app on all CPU cores.
+    In production, teams usually use PM2 (Process Manager for Node).
+
+    const cluster = require("cluster");
+    const os = require("os");
+
+    if (cluster.isMaster) {
+        const numCPUs = os.cpus().length;
+        for (let i = 0; i < numCPUs; i++) cluster.fork();
+    } else {
+        require("./server.js"); // your express app
+    }

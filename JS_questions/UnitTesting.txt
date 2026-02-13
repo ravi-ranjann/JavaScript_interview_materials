@@ -1,0 +1,220 @@
+🔹 Jest Interview Questions
+
+1. What is Jest?
+
+    * Jest is a JavaScript testing framework developed by Facebook.
+    * Used for unit testing, snapshot testing, and mocking in React apps.
+    * Features: zero configuration, fast tests, built-in mocks, and snapshot testing.
+
+2. Difference between `describe` and `test/it` in Jest
+
+    * `describe` → Groups related tests together.
+    * `test` / `it` → Defines individual test cases.
+
+    ```js
+    describe("Math Utils", () => {
+        test("adds numbers correctly", () => {
+            expect(1 + 2).toBe(3);
+        });
+    });
+    ```
+
+3. What are Jest Matchers?
+
+    * Matchers are used in assertions with `expect()`.
+    * Examples: `toBe`, `toEqual`, `toContain`, `toHaveLength`, `toBeTruthy`.
+
+    ```js
+    expect([1,2,3]).toContain(2);
+    expect(true).toBeTruthy();
+    ```
+
+4. What is snapshot testing in Jest?
+
+    * Snapshot testing captures a “snapshot” of a component’s rendered output.
+    * On future runs, Jest compares the component to the snapshot.
+    * Useful for detecting unintended UI changes.
+
+    ```js
+    import renderer from 'react-test-renderer';
+    import Button from './Button';
+
+    test('Button snapshot', () => {
+        const tree = renderer.create(<Button label="Click" />).toJSON();
+        expect(tree).toMatchSnapshot();
+    });
+    ```
+
+5. What is mocking in Jest?
+
+    * Mocking simulates modules, functions, or API calls to isolate tests.
+    * Example: mocking `fetch`:
+
+    ```js
+    global.fetch = jest.fn(() =>
+        Promise.resolve({ json: () => Promise.resolve({ name: 'Ravi' }) })
+    );
+    ```
+
+6. Difference between `toBe` and `toEqual`
+
+    * `toBe` → strict equality (`===`).
+    * `toEqual` → deep equality for objects/arrays.
+
+    ```js
+    expect(1).toBe(1);
+    expect({a:1}).toEqual({a:1});
+    ```
+
+7. What is `beforeEach` and `afterEach`?
+
+    * Hooks to run code before/after each test case.
+
+    ```js
+    beforeEach(() => console.log("Runs before each test"));
+    afterEach(() => console.log("Runs after each test"));
+    ```
+
+🔹 React Testing Library (RTL) Questions
+
+1. What is React Testing Library (RTL)?
+
+    * RTL is a library for testing React components.
+    * Focuses on testing UI as the user sees it rather than implementation details.
+
+2. Difference between Enzyme and RTL
+
+    | Feature    | Enzyme                 | RTL                           |
+    | ---------- | ---------------------- | ----------------------------- |
+    | Focus      | Implementation details | User behavior & accessibility |
+    | API        | Shallow, mount, render | Render, screen queries        |
+    | Encouraged | Testing internal state | Testing user interaction      |
+
+3. Basic RTL Test Example
+
+    ```js
+    import { render, screen, fireEvent } from "@testing-library/react";
+    import Button from "./Button";
+
+    test("renders button and handles click", () => {
+        const handleClick = jest.fn();
+        render(<Button label="Click" onClick={handleClick} />);
+        
+        const button = screen.getByText("Click");
+        fireEvent.click(button);
+
+        expect(handleClick).toHaveBeenCalledTimes(1);
+    });
+    ```
+
+4. What are `getBy`, `queryBy`, and `findBy`?
+
+    * `getBy` → throws error if element not found (sync).
+    * `queryBy` → returns `null` if element not found (sync).
+    * `findBy` → async, returns a promise, useful for async UI updates.
+
+    ```js
+    const element = screen.getByText("Hello"); // throws if not found
+    const element = screen.queryByText("Hello"); // null if not found
+    const element = await screen.findByText("Hello"); // async
+    ```
+
+5. How to test async components with RTL?
+
+    * Use `findBy` queries or `waitFor`.
+
+    ```js
+    import { render, screen, waitFor } from "@testing-library/react";
+    import Users from "./Users";
+
+    test("renders users after fetch", async () => {
+        render(<Users />);
+        const user = await screen.findByText("Ravi");
+        expect(user).toBeInTheDocument();
+    });
+    ```
+
+6. How to simulate user events?
+
+    * Use `fireEvent` or the `user-event` library.
+
+    ```js
+    import { fireEvent } from "@testing-library/react";
+
+    fireEvent.change(input, { target: { value: "Hello" } });
+    fireEvent.click(button);
+    ```
+
+7. How to test form submission?
+
+    ```js
+    test("submits form with input", () => {
+        const handleSubmit = jest.fn();
+        render(<Form onSubmit={handleSubmit} />);
+        
+        fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Ravi" } });
+        fireEvent.click(screen.getByText("Submit"));
+
+        expect(handleSubmit).toHaveBeenCalledWith({ name: "Ravi" });
+    });
+    ```
+
+8. How to test components with Redux?
+
+    * Wrap component with `Provider` and pass a test store.
+
+    ```js
+    import { render } from "@testing-library/react";
+    import { Provider } from "react-redux";
+    import { configureStore } from "@reduxjs/toolkit";
+    import counterReducer from "./counterSlice";
+    import Counter from "./Counter";
+
+    test("renders counter", () => {
+    const store = configureStore({ reducer: { counter: counterReducer } });
+    render(
+        <Provider store={store}>
+        <Counter />
+        </Provider>
+    );
+
+    expect(screen.getByText("0")).toBeInTheDocument();
+    });
+    ```
+
+9. Best Practices for RTL
+
+    * Test what the user sees, not implementation details.
+    * Avoid testing component internals like state or methods.
+    * Prefer `screen.getByRole`, `screen.getByLabelText` for accessibility-friendly queries.
+    * Use `user-event` instead of `fireEvent` for more realistic interactions.
+
+------------------------------------------------
+
+jest.fn() → create mock functions.
+
+jest.spyOn() → monitor existing functions.
+
+jest.mock() → mock entire modules (like API).
+
+render() → render React component in virtual DOM.
+
+screen → global queries, within → scoped queries.
+
+fireEvent → low-level event (onclick, onchange)
+
+userEvent → simulates real user interactions (keypress, typing, mouse movement)
+
+----------------------------------------
+
+Mock (jest.fn): Completely fakes a function. You control return values and track usage.
+
+Spy (jest.spyOn): Wraps an existing function to monitor or override it temporarily.
+
+Use Cases:
+
+Mocks: isolate dependencies, fake API calls.
+
+Spies: ensure real function is called correctly or temporarily change its behavior.
+
+React Testing: Mocks and spies help test components without hitting the real network and verify interactions reliably.

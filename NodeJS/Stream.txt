@@ -1,0 +1,14 @@
+What are Streams in Node.js?
+
+    Streams handle continuous data flow (chunks).
+
+    Types: Readable, Writable, Duplex, Transform.
+
+    Example: Reading a large file without loading into memory.
+
+What is a Buffer in Node.js?
+
+    A temporary memory area outside V8 heap for binary data.
+
+    Useful for working with files, TCP streams, or raw binary data.
+

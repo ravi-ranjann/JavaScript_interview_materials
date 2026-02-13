@@ -1,0 +1,115 @@
+Q. What are the basic types in TypeScript?
+
+Answer:
+string, number, boolean, null, undefined, any, unknown, never, object, void.
+
+Example:- 
+let age: number = 30;
+let isAdmin: boolean = true;
+let notSure: any = "Could be anything";
+let value: unknown = "Safe unknown type";
+
+!. What is the difference between any, unknown, and never?
+
+Answer:
+
+any: turns off type checking (unsafe).
+
+unknown: safer alternative to "any", requiring type checks before use.
+
+never: represents values that never occur (e.g., function that throws).
+
+Example:- 
+let x: any = 10;       // can be used anywhere
+let y: unknown = 10;   // must check before using
+function fail(msg: string): never {
+  throw new Error(msg);
+}
+
+Q. What are interfaces in TypeScript? How are they different from types?
+
+Answer:
+
+interface: defines object shape and can be extended/merged.
+
+type: can represent primitives, unions, intersections.
+
+Example:- 
+interface User {
+  id: number;
+  name: string;
+}
+
+type Role = "admin" | "user";
+
+Q. What are enums in TypeScript? When would you use them?
+
+Answer:
+Enums are used to define a set of named constants.
+
+Example:- 
+enum Status {
+  Pending,
+  InProgress,
+  Done
+}
+
+let task: Status = Status.Done;
+
+Q. What are type aliases? Give an example.
+
+Answer:
+A type alias gives a name to a type.
+
+Example:- 
+type ID = string | number;
+let userId: ID = 42;
+
+Q. What is the difference between interface and type?
+
+Answer:
+
+interface: extendable, supports declaration merging.
+
+type: more flexible (can do unions, intersections, primitives).
+
+Example:- 
+interface A { x: number; }
+interface A { y: number; }  // merged ✅
+
+type B = { x: number };
+// type B = { y: number }; ❌ cannot redeclare
+
+Q. What are generics in TypeScript? Can you give an example?
+
+Answer:
+Generics make components reusable by working with multiple types.
+
+Example:- 
+function identity<T>(value: T): T {
+  return value;
+}
+
+let num = identity<number>(10); // T = number
+let str = identity("hello");    // T = string
+
+Q. How do you use utility types like Partial, Pick, Omit, Readonly, Record?
+
+Answer:
+They transform types.
+
+Example:- 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+type PartialUser = Partial<User>;   // all props optional
+type ReadonlyUser = Readonly<User>; // all props readonly
+type UserPreview = Pick<User, "id" | "name">;
+type UserWithoutEmail = Omit<User, "email">;
+type UserRoles = Record<"admin" | "guest", User>;
+
+
+

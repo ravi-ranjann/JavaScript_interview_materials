@@ -1,0 +1,49 @@
+🔹 What is React Fiber?
+
+* React Fiber is the reconciliation engine in React (introduced in React 16).
+* It’s a new algorithm for updating the UI in a more efficient, asynchronous, and interruptible way.
+* Fiber allows React to:
+
+  * Pause, reuse, or abort work (like rendering)
+  * Prioritize updates (urgent like typing > background like animations)
+  * Split rendering into chunks → smoother UI
+
+👉 In short: Fiber makes React faster, more responsive, and concurrency-friendly.
+
+# 🔹 Key Concepts of Fiber
+
+1. Fiber Node
+
+   * An object that represents a piece of the UI (a component, DOM node, etc.).
+   * Each element in the React tree has a corresponding fiber.
+
+2. Work Units
+
+   * Rendering is broken into small “units of work”.
+   * React can pause work after a unit, check for higher priority tasks, and resume later.
+
+3. Phases
+
+   * Render Phase (Reconciliation) → Build the new Fiber tree (can be paused).
+   * Commit Phase → Apply changes to the DOM (synchronous, can’t be interrupted).
+
+
+---------------------------------------------
+
+Reconciliation in React is the process of comparing the new Virtual DOM tree 
+with the previous one and then updating the real DOM with only the necessary changes.
+
+    1. React builds a Virtual DOM (a lightweight JS object representing the UI).
+    2. When state/props change, React creates a new Virtual DOM.
+    3. React then diffs (compares) the new tree with the old one → this process is called Reconciliation.
+    4. Finally, React updates only the parts of the real DOM that actually changed.
+
+Reconciliation = Virtual DOM diffing + selective real DOM updates.
+
+
+--------------------------------------------------------
+
+Hydration in React is the process of attaching React’s event listeners and state to the static 
+HTML that was rendered on the server, making it interactive on the client. It prevents React 
+from re-rendering the whole UI from scratch and is essential for SSR and frameworks like Next.js.
+

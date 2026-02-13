@@ -1,0 +1,104 @@
+1. concat - used for both string and array
+    a. string syntax - string.concat(string1, string2, ..., stringX)
+    b. array syntax - array1.concat(array2, array3, ..., arrayX)
+
+    let result = ‘text1’.concat(‘text2’); // text1text2
+    let result = [1,2,3].concat([4,5,6]); // [1,2,3,4,5,6]
+
+2. includes - used for both string and array.
+    a. string syntax - string.includes(searchvalue, start)
+    b. array syntax - array.includes(element, start)
+
+    let text = "Hello world, welcome to the universe.";
+    let result = text.includes("world"); // true
+    const fruits = ["Banana", "Orange", "Apple", "Mango"];
+    fruits.includes("Mango"); // true
+
+3. repeat - method returns a string with a number of copies of a string.
+    a. syntax - string.repeat(count)
+
+    let text = "Hello world!";
+    let result = text.repeat(3); // Hello world!Hello world!Hello world!
+
+4. replace - returns a new string with the value(s) replaced
+    a. syntax - string.replace(searchValue, newValue)
+
+    let text = "Mr blue has a blue house and a blue car";
+    let result = text.replace("blue", "red"); // replace first blue
+    let result = text.replace(/blue/g, "red"); // replace all blue
+
+5. for...in - combo iterates (loops) over the properties of an object
+    a. syntax - for (x in object) { code block to be executed }
+
+    const person = {fname:"John", lname:"Doe", age:25};
+    let text = "";
+    for (let x in person) {
+        text += person[x] + " ";
+    }
+
+6. for...of - combo iterates (loops) over the values of any iterable.
+    a. syntax - for (x of iterable) { code block to be executed }
+
+    let text = "";
+    const cars = ['BMW', 'Volvo', 'Mini'];
+    for (let x of cars) {
+        text += x + " ";
+    }
+
+7. isNaN - short for "Not-a-Number"
+    a. syntax - isNaN() method returns true if the value is NaN, and the type is a Number.
+    
+    isNaN('Hello'); // true
+    isNaN(‘12’); // false
+    isNaN(12); // false
+
+8. toString - returns a number as a string.
+    a. syntax - number.toString(radix)
+
+    let num = 15;
+    let text = num.toString(); // ‘15’ of type string
+
+9. toPrecision - formats a number to a specified length.
+    a. syntax - number.toPrecision(x)
+
+    let num = 0.001658853;
+    num.toPrecision(2); // 0.0017
+
+    num.toPrecision(3); // 0.00166
+
+10. toFixed - rounds the string to a specified number of decimals.
+    a. syntax - number.toFixed(x)
+
+    let num = 5.56789;
+    let n = num.toFixed(); // 6
+    let n = num.toFixed(2); // 5.57
+
+11. Number.isInteger - method returns true if a value is an integer of the
+datatype Number.
+    a. syntax - Number.isInteger(value)
+
+    Number.isInteger(123); // true
+    Number.isInteger(-123); // true
+    Number.isInteger('123'); // false
+    Number.isInteger(5-2); // true
+    Number.isInteger(5/2); // false
+
+12. instanceof - returns true if an object is an instance of a specified object
+    a. const cars = ["Saab", "Volvo", "BMW"];
+    b. (cars instanceof Array) // Returns true
+    c. (cars instanceof Object) // Returns true
+    d. (cars instanceof String) // Returns false
+    e. (cars instanceof Number) // Returns false
+
+13. typeof - returns the type of a variable, object, function or expression
+    a. typeof "John" // string
+    b. typeof 3.14 // number
+    c. typeof NaN // number
+    d. typeof false // boolean
+    e. typeof [1, 2, 3, 4] // object
+    f. typeof {name:'John', age:34} // object
+    g. typeof new Date() // object
+    h. typeof function () {} // function
+    i. typeof myCar // undefined
+    j. typeof null // object
+    

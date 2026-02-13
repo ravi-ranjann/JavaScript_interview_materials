@@ -1,0 +1,151 @@
+Difference between process.nextTick(), setImmediate(), and setTimeout()?
+
+    process.nextTick() → runs immediately after the current function finishes, 
+                            before moving to the next event loop continues.
+
+                    -> used for Validation before sending response
+
+        app.get("/checkout", (req, res) => {
+            console.log("1️⃣ Checkout started");
+
+            // Small fix after finishing current request logic
+            process.nextTick(() => {
+                console.log("2️⃣ Update in-memory cart status (tiny task)");
+            });
+
+            res.send("✅ Checkout processed");
+        });
+
+    setImmediate() → runs in the check phase, after I/O callbacks are processed.
+            -> Heavy Async Tasks (Logs, Cleanup)
+            -> run heavier background work after I/O events (like file/db/network).
+            -> Logging after serving request
+
+        const fs = require("fs");
+
+        app.get("/download", (req, res) => {
+            fs.readFile("bigfile.txt", (err, data) => {
+                if (err) return res.status(500).send("Error");
+
+                res.send("📂 File downloaded");
+
+                // Heavy logging/reporting after file read is done
+                setImmediate(() => {
+                console.log("📝 Log download activity to external system");
+                });
+            });
+        });
+
+    setTimeout(fn,0) → runs in the timer phase, after at least 0ms (but not truly immediate).
+                -> Send emails, SMS, push notifications after order/payment.
+
+
+How do you handle errors in Node.js?
+
+    Callbacks → function(err, data).
+
+    Promises → .catch().
+
+    async/await → try...catch.
+
+    Global handlers: process.on('uncaughtException'), process.on('unhandledRejection')
+
+Common security practices in Node.js?
+
+    Validate & sanitize inputs.
+
+    Use helmet for HTTP headers.
+    (
+        const helmet = require("helmet");
+        const app = express();
+        app.use(helmet()); // Apply helmet globally
+    )
+
+    Avoid eval() & insecure JSON.parse() usage.
+
+    Use HTTPS/TLS.
+
+    Store secrets in env variables, not in code.
+
+----------------------------------------------
+
+• require: This is part of the CommonJS module system, which is the traditional and default module system in Node.js. 
+• import: This is part of ECMAScript Modules (ESM), the standardized module system for JavaScript, also supported in modern Node.js versions. 
+
+Here are the key distinctions: 
+
+• Syntax and Usage: 
+	• require: Used as a function call to synchronously load modules. 
+
+        const myModule = require('./myModule.js');
+
+• import: Used as a statement to statically or dynamically load modules. 
+
+        import myModule from './myModule.js'; // Static import
+        const myModule = await import('./myModule.js'); // Dynamic import
+
+• Loading Behavior: 
+	• require: Loads modules synchronously at runtime, meaning execution pauses until the module is loaded. 
+	• import: Loads modules asynchronously (especially dynamic imports) and is processed during the parsing phase, often before the rest of the script executes. Static imports are hoisted to the top of the file. [1]  
+
+• Conditional Loading: 
+	• require: Can be used conditionally within blocks or functions, allowing for dynamic module loading based on logic. 
+
+        if (someCondition) {
+            const specificModule = require('./specificModule.js');
+        }
+
+• import: Static import statements cannot be used conditionally. Dynamic import() (as a function returning a Promise) allows for conditional and asynchronous loading. 
+
+• File Extensions: 
+	• require: Typically used with .js file extensions. 
+	• import: Requires .mjs for explicit ES Modules or can be inferred if type: "module" is set in package.json. 
+
+• Named Exports: 
+	• require: Named exports from CommonJS modules are typically accessed by destructuring the object returned by require(). 
+
+        const { namedExport } = require('./myModule.js');
+
+• import: Supports direct named imports. 
+
+        import { namedExport } from './myModule.js';
+
+In summary, require is the older, synchronous, and more flexible CommonJS approach, 
+while import represents the modern, standardized, and typically asynchronous ES Module approach. 
+The choice often depends on project setup, compatibility requirements, 
+and whether you need the benefits of static analysis and standardized module loading. 
+
+
+---------------------------------------------
+FAQ Topics
+
+Event loop & async handling
+
+Callbacks vs Promises vs async/await
+
+EventEmitter, Streams, Buffers
+
+Cluster & Worker Threads
+
+Express.js middleware & routing
+
+Error handling
+
+Security best practices
+
+Connection pooling & scaling
+
+Package management & dependencies
+
+event driven Architecture
+
+Circuit breaker
+
+caching
+
+socket programming
+
+log monitoring
+
+
+------------------------------------------------------------------------------

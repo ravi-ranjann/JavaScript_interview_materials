@@ -1,0 +1,122 @@
+Authentication = “Who are you?”
+    Verifies the user’s identity (login with username/password, tokens, OAuth, etc.).
+
+Authorization = “What are you allowed to do?”
+    Determines whether an authenticated user has permission to access a resource (roles, access control).
+
+------------------------------------------
+Authentication verifies the identity of a user (login via JWT, OAuth, sessions).
+
+Authorization determines what resources an authenticated user can access 
+(role-based or permission-based access).
+
+In Node.js with Express, authentication can be done using jsonwebtoken (JWT) and 
+password hashing with bcrypt. Authorization is typically implemented using 
+middleware that checks roles/permissions before granting access.
+
+
+-------------------------------------------------------
+
+Session-based Authentication
+
+How it works:
+
+    1. User logs in with username & password.
+
+    2. Server verifies credentials and creates a session (a record in memory or DB).
+
+    3. A session ID is stored in a cookie on the client’s browser.
+
+    4. On every request, the client sends the cookie → server checks session store → authenticates user.
+
+    Where session is stored?
+
+        On the server (in memory, Redis, DB, etc.).
+
+        Client only stores the session ID (not full data).
+
+    Pros:
+
+        Easy to implement.
+
+        Session can be invalidated easily on logout.
+
+        Data is kept on the server (secure if implemented well).
+
+    Cons:
+
+        Not scalable in distributed systems (need session store like Redis).
+
+        Requires server-side storage.
+
+        Cookies can be stolen if not secured (XSS/CSRF risk).
+
+    const session = require("express-session");
+
+    app.use(session({
+        secret: "mysecret123",
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false } // secure: true in HTTPS
+    }));
+
+    app.post("/login", (req, res) => {
+        // After user is verified
+        req.session.user = { username: "John" };
+        res.send("Logged in with session!");
+    });
+
+----------------------------------------------------------
+JWT-based Authentication
+
+How it works:
+
+    1. User logs in with credentials.
+
+    2. Server generates a JWT token (signed with secret/private key).
+
+    3. Client stores JWT (usually in localStorage or Authorization header).
+
+    4. On every request, client sends JWT → server verifies it using secret → authenticates user.
+
+Where data is stored?
+
+    On the client side (JWT contains user info & claims).
+
+    Server is stateless (no storage needed).
+
+Pros:
+
+    Scales well for microservices (no centralized session storage).
+
+    Server is stateless (good for distributed systems).
+
+    Token can store additional claims (role, expiry, etc.).
+
+Cons:
+
+    Token revocation is tricky (once issued, cannot easily invalidate before expiry).
+
+    Larger token size compared to session IDs.
+
+    Must secure storage on client side (XSS risk if stored in localStorage).
+
+    const jwt = require("jsonwebtoken");
+
+    app.post("/login", (req, res) => {
+        const user = { username: "John", role: "admin" };
+        const token = jwt.sign(user, "mysecret123", { expiresIn: "1h" });
+        res.json({ token });
+    });
+
+    function authenticate(req, res, next) {
+        const authHeader = req.headers["authorization"];
+        const token = authHeader && authHeader.split(" ")[1];
+        if (!token) return res.sendStatus(401);
+
+        jwt.verify(token, "mysecret123", (err, user) => {
+            if (err) return res.sendStatus(403);
+            req.user = user;
+            next();
+        });
+    }

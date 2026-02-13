@@ -1,0 +1,18 @@
+A memory leak happens when an app keeps holding references to objects/data 
+that are no longer needed, so the garbage collector (GC) can’t free them.
+
+Causes
+1. Not adding clearInterval after using setInterval.
+2. Not Closing Database Connections
+3. Using Global Variables
+4. Unresolved Promises (return new Promise(() => {}); // never resolves/rejects)
+
+Preventions
+
+✅ Use --inspect or Chrome DevTools to track memory usage.
+✅ Use monitoring tools: clinic, pm2, heapdump.
+✅ Always clear timers & listeners when not needed.
+✅ Use connection pooling for DB.
+✅ Limit cache size (LRU, Redis).
+✅ Handle promise rejections properly.
+✅ Run load tests + observe memory growth over time.

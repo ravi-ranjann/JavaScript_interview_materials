@@ -1,0 +1,144 @@
+🔹 Basic Hooks
+
+1. useState - Manages state in a functional component.
+
+   const [count, setCount] = useState(0);
+
+2. useEffect - Handles side effects like data fetching, subscriptions, and DOM updates.
+
+    useEffect(() => {
+        console.log("Mounting")
+    }, [])
+   
+   useEffect(() => {
+        console.log("Component updated on dependency change");
+   }, [count]);
+
+    useEffect(() => {
+        console.log("Component updated on every change");
+    });
+
+    useEffect(() => {
+        console.log("Unmounting");
+        return () => null;
+    }, []);
+
+3. useContext - Consumes values from a `React.Context` without prop drilling.(Context API)
+
+   const theme = useContext(ThemeContext);
+
+--------------------------------
+
+🔹 Additional Hooks
+
+4. useReducer - The useReducer hook is used in React when you have complex state logic 
+                (like multiple related state updates) or when the next state depends on 
+                the previous one.
+                It’s similar to Redux but built into React.
+
+   const [state, dispatch] = useReducer(reducer, initialState);
+
+    reducer → A function (state, action) => newState
+    initialState → The default state
+    state → Current state
+    dispatch → Function to send actions to the reducer
+
+    import React, { useReducer } from "react";
+
+    // Reducer function
+    const reducer = (state, action) => {
+        switch (action.type) {
+            case "increment":
+                return { count: state.count + 1 };
+            case "decrement":
+                return { count: state.count - 1 };
+            case "reset":
+                return { count: 0 };
+            default:
+                return state;
+        }
+    };
+
+    // Initial state
+    const initialState = { count: 0 };
+
+    function Counter() {
+        const [state, dispatch] = useReducer(reducer, initialState);
+
+        return (
+            <div style={{ textAlign: "center", marginTop: "50px" }}>
+                <h2>useReducer Example</h2>
+                <h3>Count: {state.count}</h3>
+                <button onClick={() => dispatch({ type: "increment" })}>➕ Increment</button>
+                <button onClick={() => dispatch({ type: "decrement" })}>➖ Decrement</button>
+                <button onClick={() => dispatch({ type: "reset" })}>🔄 Reset</button>
+            </div>
+        );
+    }
+
+    export default Counter;
+
+    For Ex - Managing forms with multiple fields
+
+5. useCallback - Memoizes a function so it doesn’t get recreated on every render.
+
+   const memoizedFn = useCallback(() => doSomething(a, b), [a, b]);
+
+6. useMemo - Memoizes a computed value for performance optimization.
+
+   const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+
+7. useRef - Creates a mutable reference that persists across renders (often for DOM access).
+
+   const inputRef = useRef(null);
+
+8. useImperativeHandle - Customizes the instance value that is exposed when using `ref` with `forwardRef`.
+
+   useImperativeHandle(ref, () => ({ focus: () => inputRef.current.focus() }));
+
+9. useLayoutEffect - It is almost identical to useEffect, but it runs synchronously 
+                    after the DOM updates and before the browser paints the screen.
+                    
+        That means:
+
+        useEffect → runs after paint (async, non-blocking)
+
+        useLayoutEffect → runs before paint (sync, blocking, so UI won’t flicker)
+
+    👉 Use it when you need to measure DOM elements or synchronously re-render before the user sees changes.
+
+    Ex:- 
+        useLayoutEffect(() => {
+            // Scroll immediately after DOM update, before paint
+            endRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, [messages]);
+
+10. useDebugValue - Displays a label in React DevTools for custom hooks.
+
+    useDebugValue(isOnline ? "Online" : "Offline");
+
+---
+
+🔹 Newer Hooks (React 18+)
+
+11. useId - Generates a unique ID for accessibility attributes.
+
+    const id = useId();
+
+12. useTransition - Marks state updates as “non-urgent” to keep the UI responsive.
+
+    const [isPending, startTransition] = useTransition();
+
+13. useDeferredValue - Defers re-rendering of a non-urgent part of the UI.
+
+    const deferredValue = useDeferredValue(value);
+
+14. useSyncExternalStore - Subscribes to external stores (like Redux) in a concurrent-safe way.
+
+15. useInsertionEffect - For injecting styles (used mainly by CSS-in-JS libraries). Runs before DOM mutations.
+
+---
+
+✅ Custom Hooks* - (functions starting with `use`) by combining built-in hooks to reuse logic across components.
+
+---
