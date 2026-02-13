@@ -1,3 +1,19 @@
+/*
+  CLOSURE DEFINITION:
+  A closure is a function that has access to variables from another function's scope.
+  It's created every time a function is created. It has access to:
+  1. Its own scope (variables defined inside the function)
+  2. Outer function's scope (variables of the parent function)
+  3. Global scope (global variables)
+  
+  PRACTICAL USES:
+  - Data encapsulation & privacy (hide internal state)
+  - Function factories (create customized functions)
+  - Event handlers with state
+  - Module pattern
+  - Callbacks with context
+*/
+
 // Example 1
 function outer() {
     let count = 0;  // This variable is in outer's scope
